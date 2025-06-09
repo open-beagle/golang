@@ -60,10 +60,13 @@ jobs:
 
       - name: Create and push multi-arch manifest for Alpine
         run: |
+          # Create manifest for full version
           docker manifest create ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_VERSION }}-alpine \
             ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_VERSION }}-alpine-amd64 \
             ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_VERSION }}-alpine-arm64
           docker manifest push ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_VERSION }}-alpine
+
+          # Create manifest for major version
           docker manifest create ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_MAJOR_VERSION }}-alpine \
             ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_VERSION }}-alpine-amd64 \
             ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_VERSION }}-alpine-arm64
@@ -117,10 +120,13 @@ jobs:
 
       - name: Create and push multi-arch manifest for Bullseye
         run: |
+          # Create manifest for full version
           docker manifest create ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_VERSION }}-bullseye \
             ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_VERSION }}-bullseye-amd64 \
             ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_VERSION }}-bullseye-arm64
           docker manifest push ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_VERSION }}-bullseye
+
+          # Create manifest for major version
           docker manifest create ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_MAJOR_VERSION }}-bullseye \
             ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_VERSION }}-bullseye-amd64 \
             ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_VERSION }}-bullseye-arm64
@@ -144,16 +150,16 @@ jobs:
       - name: Create and push version tags
         run: |
           # Create architecture specific tags
-          docker pull ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_MAJOR_VERSION }}-bullseye-amd64
-          docker tag ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_MAJOR_VERSION }}-bullseye-amd64 ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_MAJOR_VERSION }}-amd64
+          docker pull ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_VERSION }}-bullseye-amd64
+          docker tag ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_VERSION }}-bullseye-amd64 ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_MAJOR_VERSION }}-amd64
           docker push ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_MAJOR_VERSION }}-amd64
 
-          docker pull ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_MAJOR_VERSION }}-bullseye-arm64
-          docker tag ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_MAJOR_VERSION }}-bullseye-arm64 ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_MAJOR_VERSION }}-arm64
+          docker pull ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_VERSION }}-bullseye-arm64
+          docker tag ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_VERSION }}-bullseye-arm64 ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_MAJOR_VERSION }}-arm64
           docker push ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_MAJOR_VERSION }}-arm64
 
           # Create version tags for all architectures
           docker manifest create ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_MAJOR_VERSION }} \
-            ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_MAJOR_VERSION }}-bullseye-amd64 \
-            ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_MAJOR_VERSION }}-bullseye-arm64
+            ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_VERSION }}-bullseye-amd64 \
+            ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_VERSION }}-bullseye-arm64
           docker manifest push ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_MAJOR_VERSION }}
