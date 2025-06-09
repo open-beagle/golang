@@ -11,6 +11,8 @@ LABEL maintainer=${AUTHOR} version=${VERSION}
 COPY --from=xx / /
 
 ENV GOPROXY=https://goproxy.cn
-RUN sed -i "s@dl-cdn.alpinelinux.org@mirrors.aliyun.com@g" /etc/apk/repositories && \
+RUN apk update && \
+  apk --no-cache --update add bash curl tzdata alpine-sdk linux-headers && \
+  sed -i "s@dl-cdn.alpinelinux.org@mirrors.aliyun.com@g" /etc/apk/repositories && \
   apk update && \
-  apk --no-cache --update add bash curl tzdata alpine-sdk linux-headers
+  rm -rf /var/cache/apk/*
