@@ -128,7 +128,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: .beagle/debian-arch.dockerfile
+          file: .beagle/debian.dockerfile
           push: true
           platforms: linux/amd64
           tags: |
@@ -146,7 +146,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: .beagle/debian-arch.dockerfile
+          file: .beagle/debian.dockerfile
           push: true
           platforms: linux/arm64
           tags: |
@@ -215,7 +215,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: .beagle/debian-arch.dockerfile
+          file: .beagle/debian.dockerfile
           push: true
           platforms: linux/amd64
           tags: |
@@ -233,7 +233,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: .beagle/debian-arch.dockerfile
+          file: .beagle/debian.dockerfile
           push: true
           platforms: linux/arm64
           tags: |
