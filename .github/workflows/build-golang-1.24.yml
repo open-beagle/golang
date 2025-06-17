@@ -7,7 +7,6 @@ on:
   workflow_dispatch: # 允许手动触发
 
 env:
-  REGISTRY_ALIYUN: registry.cn-qingdao.aliyuncs.com
   GOLANG_VERSION: 1.24.4
   GOLANG_MAJOR_VERSION: 1.24
   XX_VERSION: 1.6.1
@@ -30,13 +29,6 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Login to Aliyun Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.REGISTRY_ALIYUN }}
-          username: ${{ secrets.REGISTRY_USER_ALIYUN }}
-          password: ${{ secrets.REGISTRY_PASSWORD_ALIYUN }}
-
       - name: Build and push Alpine images for amd64
         uses: docker/build-push-action@v5
         with:
@@ -45,8 +37,6 @@ jobs:
           push: true
           platforms: linux/amd64
           tags: |
-            ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_VERSION }}-alpine-amd64
-            ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_MAJOR_VERSION }}-alpine-amd64
             ghcr.io/${{ github.repository_owner }}/golang:${{ env.GOLANG_VERSION }}-alpine-amd64
             ghcr.io/${{ github.repository_owner }}/golang:${{ env.GOLANG_MAJOR_VERSION }}-alpine-amd64
           build-args: |
@@ -63,8 +53,6 @@ jobs:
           push: true
           platforms: linux/arm64
           tags: |
-            ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_VERSION }}-alpine-arm64
-            ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_MAJOR_VERSION }}-alpine-arm64
             ghcr.io/${{ github.repository_owner }}/golang:${{ env.GOLANG_VERSION }}-alpine-arm64
             ghcr.io/${{ github.repository_owner }}/golang:${{ env.GOLANG_MAJOR_VERSION }}-alpine-arm64
           build-args: |
@@ -76,23 +64,11 @@ jobs:
       - name: Create and push multi-arch manifest for Alpine
         run: |
           # Create manifest for full version
-          docker manifest create ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_VERSION }}-alpine \
-            ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_VERSION }}-alpine-amd64 \
-            ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_VERSION }}-alpine-arm64
-          docker manifest push ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_VERSION }}-alpine
-
-          # Create manifest for major version
-          docker manifest create ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_MAJOR_VERSION }}-alpine \
-            ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_VERSION }}-alpine-amd64 \
-            ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_VERSION }}-alpine-arm64
-          docker manifest push ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_MAJOR_VERSION }}-alpine
-
-          # Create manifest for full version
           docker manifest create ghcr.io/${{ github.repository_owner }}/golang:${{ env.GOLANG_VERSION }}-alpine \
             ghcr.io/${{ github.repository_owner }}/golang:${{ env.GOLANG_VERSION }}-alpine-amd64 \
             ghcr.io/${{ github.repository_owner }}/golang:${{ env.GOLANG_VERSION }}-alpine-arm64
           docker manifest push ghcr.io/${{ github.repository_owner }}/golang:${{ env.GOLANG_VERSION }}-alpine
-          
+
           # Create manifest for major version
           docker manifest create ghcr.io/${{ github.repository_owner }}/golang:${{ env.GOLANG_MAJOR_VERSION }}-alpine \
             ghcr.io/${{ github.repository_owner }}/golang:${{ env.GOLANG_VERSION }}-alpine-amd64 \
@@ -117,13 +93,6 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Login to Aliyun Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.REGISTRY_ALIYUN }}
-          username: ${{ secrets.REGISTRY_USER_ALIYUN }}
-          password: ${{ secrets.REGISTRY_PASSWORD_ALIYUN }}
-
       - name: Build and push Bullseye images for amd64
         uses: docker/build-push-action@v5
         with:
@@ -132,8 +101,6 @@ jobs:
           push: true
           platforms: linux/amd64
           tags: |
-            ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_VERSION }}-bullseye-amd64
-            ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_MAJOR_VERSION }}-bullseye-amd64
             ghcr.io/${{ github.repository_owner }}/golang:${{ env.GOLANG_VERSION }}-bullseye-amd64
             ghcr.io/${{ github.repository_owner }}/golang:${{ env.GOLANG_MAJOR_VERSION }}-bullseye-amd64
           build-args: |
@@ -150,8 +117,6 @@ jobs:
           push: true
           platforms: linux/arm64
           tags: |
-            ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_VERSION }}-bullseye-arm64
-            ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_MAJOR_VERSION }}-bullseye-arm64
             ghcr.io/${{ github.repository_owner }}/golang:${{ env.GOLANG_VERSION }}-bullseye-arm64
             ghcr.io/${{ github.repository_owner }}/golang:${{ env.GOLANG_MAJOR_VERSION }}-bullseye-arm64
           build-args: |
@@ -162,18 +127,6 @@ jobs:
 
       - name: Create and push multi-arch manifest for Bullseye
         run: |
-          # Create manifest for full version
-          docker manifest create ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_VERSION }}-bullseye \
-            ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_VERSION }}-bullseye-amd64 \
-            ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_VERSION }}-bullseye-arm64
-          docker manifest push ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_VERSION }}-bullseye
-
-          # Create manifest for major version
-          docker manifest create ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_MAJOR_VERSION }}-bullseye \
-            ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_VERSION }}-bullseye-amd64 \
-            ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_VERSION }}-bullseye-arm64
-          docker manifest push ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_MAJOR_VERSION }}-bullseye
-
           # Create manifest for full version
           docker manifest create ghcr.io/${{ github.repository_owner }}/golang:${{ env.GOLANG_VERSION }}-bullseye \
             ghcr.io/${{ github.repository_owner }}/golang:${{ env.GOLANG_VERSION }}-bullseye-amd64 \
@@ -204,13 +157,6 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Login to Aliyun Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.REGISTRY_ALIYUN }}
-          username: ${{ secrets.REGISTRY_USER_ALIYUN }}
-          password: ${{ secrets.REGISTRY_PASSWORD_ALIYUN }}
-
       - name: Build and push Bookworm images for amd64
         uses: docker/build-push-action@v5
         with:
@@ -219,8 +165,6 @@ jobs:
           push: true
           platforms: linux/amd64
           tags: |
-            ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_VERSION }}-bookworm-amd64
-            ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_MAJOR_VERSION }}-bookworm-amd64
             ghcr.io/${{ github.repository_owner }}/golang:${{ env.GOLANG_VERSION }}-bookworm-amd64
             ghcr.io/${{ github.repository_owner }}/golang:${{ env.GOLANG_MAJOR_VERSION }}-bookworm-amd64
           build-args: |
@@ -237,8 +181,6 @@ jobs:
           push: true
           platforms: linux/arm64
           tags: |
-            ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_VERSION }}-bookworm-arm64
-            ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_MAJOR_VERSION }}-bookworm-arm64
             ghcr.io/${{ github.repository_owner }}/golang:${{ env.GOLANG_VERSION }}-bookworm-arm64
             ghcr.io/${{ github.repository_owner }}/golang:${{ env.GOLANG_MAJOR_VERSION }}-bookworm-arm64
           build-args: |
@@ -250,18 +192,6 @@ jobs:
       - name: Create and push multi-arch manifest for bookworm
         run: |
           # Create manifest for full version
-          docker manifest create ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_VERSION }}-bookworm \
-            ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_VERSION }}-bookworm-amd64 \
-            ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_VERSION }}-bookworm-arm64
-          docker manifest push ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_VERSION }}-bookworm
-
-          # Create manifest for major version
-          docker manifest create ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_MAJOR_VERSION }}-bookworm \
-            ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_VERSION }}-bookworm-amd64 \
-            ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_VERSION }}-bookworm-arm64
-          docker manifest push ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_MAJOR_VERSION }}-bookworm
-
-          # Create manifest for full version
           docker manifest create ghcr.io/${{ github.repository_owner }}/golang:${{ env.GOLANG_VERSION }}-bookworm \
             ghcr.io/${{ github.repository_owner }}/golang:${{ env.GOLANG_VERSION }}-bookworm-amd64 \
             ghcr.io/${{ github.repository_owner }}/golang:${{ env.GOLANG_VERSION }}-bookworm-arm64
@@ -272,7 +202,7 @@ jobs:
             ghcr.io/${{ github.repository_owner }}/golang:${{ env.GOLANG_VERSION }}-bookworm-amd64 \
             ghcr.io/${{ github.repository_owner }}/golang:${{ env.GOLANG_VERSION }}-bookworm-arm64
           docker manifest push ghcr.io/${{ github.repository_owner }}/golang:${{ env.GOLANG_MAJOR_VERSION }}-bookworm
-  
+
   create-version-tags:
     name: Create Version Tags
     needs: [build-bookworm]
@@ -288,27 +218,19 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Login to Aliyun Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.REGISTRY_ALIYUN }}
-          username: ${{ secrets.REGISTRY_USER_ALIYUN }}
-          password: ${{ secrets.REGISTRY_PASSWORD_ALIYUN }}
-
       - name: Create and push version tags
         run: |
           # Create architecture specific tags
-          docker pull ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_VERSION }}-bookworm-amd64
-          docker tag ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_VERSION }}-bookworm-amd64 ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_MAJOR_VERSION }}-amd64
-          docker push ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_MAJOR_VERSION }}-amd64
+          docker pull ghcr.io/${{ github.repository_owner }}/golang:${{ env.GOLANG_VERSION }}-bullseye-amd64
+          docker tag ghcr.io/${{ github.repository_owner }}/golang:${{ env.GOLANG_VERSION }}-bullseye-amd64 ghcr.io/${{ github.repository_owner }}/golang:${{ env.GOLANG_MAJOR_VERSION }}-amd64
+          docker push ghcr.io/${{ github.repository_owner }}/golang:${{ env.GOLANG_MAJOR_VERSION }}-amd64
 
-          docker pull ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_VERSION }}-bookworm-arm64
-          docker tag ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_VERSION }}-bookworm-arm64 ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_MAJOR_VERSION }}-arm64
-          docker push ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_MAJOR_VERSION }}-arm64
+          docker pull ghcr.io/${{ github.repository_owner }}/golang:${{ env.GOLANG_VERSION }}-bullseye-arm64
+          docker tag ghcr.io/${{ github.repository_owner }}/golang:${{ env.GOLANG_VERSION }}-bullseye-arm64 ghcr.io/${{ github.repository_owner }}/golang:${{ env.GOLANG_MAJOR_VERSION }}-arm64
+          docker push ghcr.io/${{ github.repository_owner }}/golang:${{ env.GOLANG_MAJOR_VERSION }}-arm64
 
           # Create version tags for all architectures
-          docker manifest create ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_MAJOR_VERSION }} \
-            ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_VERSION }}-bookworm-amd64 \
-            ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_VERSION }}-bookworm-arm64
-          docker manifest push ${{ env.REGISTRY_ALIYUN }}/wod/golang:${{ env.GOLANG_MAJOR_VERSION }}
-         
+          docker manifest create ghcr.io/${{ github.repository_owner }}/golang:${{ env.GOLANG_MAJOR_VERSION }} \
+            ghcr.io/${{ github.repository_owner }}/golang:${{ env.GOLANG_VERSION }}-bullseye-amd64 \
+            ghcr.io/${{ github.repository_owner }}/golang:${{ env.GOLANG_VERSION }}-bullseye-arm64
+          docker manifest push ghcr.io/${{ github.repository_owner }}/golang:${{ env.GOLANG_MAJOR_VERSION }}
